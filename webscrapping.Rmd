@@ -1,0 +1,55 @@
+---
+title: "Web Scrapping Using R"
+author: "Jenfa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+# Scrapping IMDB movie rating site
+## Installing web scrapping package like rvest and dplyr package. 
+
+```{r package}
+install.packages("rvest", repos = "http://cran.us.r-project.org")
+install.packages("dplyr", repos = "http://cran.us.r-project.org")
+```
+
+## Loading the packages installed
+```{r package loading}
+library("rvest")
+library("dplyr")
+```
+
+## Reading the html address and asigning to variable page.
+
+```{r}
+page<-  read_html("https://www.imdb.com/chart/top/")
+```
+
+## Creating vector title, year and rating
+```{r}
+title<- page %>% 
+  html_nodes(".titleColumn a") %>% 
+  html_text()
+
+year<- page %>% 
+  html_nodes(".secondaryInfo") %>% 
+  html_text()
+
+rating<- page %>% 
+  html_nodes("strong") %>% 
+  html_text()
+```
+## Creating a movies dataframe
+```{r}
+movies<- data.frame(title, year, rating, stringsAsFactors = FALSE)
+```
+## Reading the dataframe
+```{r}
+head(movies)
+```
+## Saving the movies to my directory in csv format
+```{r}
+write.csv(movies,file= "movies.csv")
+```
+
